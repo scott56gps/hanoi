@@ -1,0 +1,6 @@
+{
+  "workspace.library": [
+  ],
+  "runtime.version": "LuaJIT",
+  "workspace.checkThirdParty": false
+}
