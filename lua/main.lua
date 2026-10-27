@@ -43,12 +43,20 @@ function love.keypressed(key)
   end
 end
 
+function drawPegs()
+  -- Draw Pegs
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.rectangle("line", Peg1.x, Peg1.y, PegWidth, PegHeight)
+  love.graphics.rectangle("line", Peg2.x, Peg2.y, PegWidth, PegHeight)
+  love.graphics.rectangle("line", Peg3.x, Peg3.y, PegWidth, PegHeight)
+end
+
 function love.draw()
   love.graphics.setFont(Font)
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.print(Message)
 
-  -- Draw a Disc
+  drawPegs()
+
+  -- Draw Discs
   love.graphics.setColor(0, 0, 1)
   love.graphics.rectangle("fill", Disc1.x, Disc1.y, Disc1.width, DiscHeight)
   -- love.graphics.setColor(1, 1, 1)
@@ -61,10 +69,4 @@ function love.draw()
   love.graphics.rectangle("fill", Disc3.x, Disc3.y, Disc3.width, DiscHeight)
   -- love.graphics.setColor(1, 1, 1)
   -- love.graphics.print("C", 243, 246)
-
-  -- Draw Pegs
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.rectangle("line", Peg1.x, Peg1.y, PegWidth, PegHeight)
-  love.graphics.rectangle("line", Peg2.x, Peg2.y, PegWidth, PegHeight)
-  love.graphics.rectangle("line", Peg3.x, Peg3.y, PegWidth, PegHeight)
 end
