@@ -43,7 +43,27 @@ function love.keypressed(key)
   end
 end
 
-function drawPegs()
+local function isWithinDisc(x, y, disc)
+  return
+    (y >= disc.y and y <= (disc.y + DiscHeight)) and
+    (x >= disc.x and x <= (disc.x + disc.width))
+end
+
+function love.mousepressed(x, y, button)
+  if button == 1 then
+    if isWithinDisc(x, y, Disc1) then
+      Message = "Clicked on Disc1!"
+    elseif isWithinDisc(x, y, Disc2) then
+      Message = "Clicked on Disc2!"
+    elseif isWithinDisc(x, y, Disc3) then
+      Message = "Clicked on Disc3!"
+    else
+        Message = "x: " .. x .. "y: " .. y
+    end
+  end
+end
+
+local function drawPegs()
   -- Draw Pegs
   love.graphics.setColor(1, 1, 1)
   love.graphics.rectangle("line", Peg1.x, Peg1.y, PegWidth, PegHeight)
@@ -53,6 +73,8 @@ end
 
 function love.draw()
   love.graphics.setFont(Font)
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print(Message)
 
   drawPegs()
 
