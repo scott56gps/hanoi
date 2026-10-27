@@ -35,6 +35,9 @@ function love.load()
     y = WindowHeight - DiscHeight,
     width = disc3Width
   }
+
+  DraggedDisc = nil
+  DragOffsetY = 0
 end
 
 function love.keypressed(key)
@@ -45,21 +48,36 @@ end
 
 local function isWithinDisc(x, y, disc)
   return
-    (y >= disc.y and y <= (disc.y + DiscHeight)) and
-    (x >= disc.x and x <= (disc.x + disc.width))
+      (y >= disc.y and y <= (disc.y + DiscHeight)) and
+      (x >= disc.x and x <= (disc.x + disc.width))
 end
 
 function love.mousepressed(x, y, button)
-  if button == 1 then
-    if isWithinDisc(x, y, Disc1) then
-      Message = "Clicked on Disc1!"
-    elseif isWithinDisc(x, y, Disc2) then
-      Message = "Clicked on Disc2!"
-    elseif isWithinDisc(x, y, Disc3) then
-      Message = "Clicked on Disc3!"
-    else
-        Message = "x: " .. x .. "y: " .. y
+  if button ~= 1 then return end
+
+  for i, disc in ipairs({ Disc1, Disc2, Disc3 }) do
+    if isWithinDisc(x, y, disc) then
+      DraggedDisc = disc
+      DragOffsetY = disc.y - y -- Captured only ONCE, when a click is detected
+      Message = "Clicked on Disc" .. i .. "!"
+      return
     end
+  end
+
+  Message = "x: " .. x .. "y: " .. y
+end
+
+function love.mousereleased(x, y, button)
+  if button == 1 then
+    DraggedDisc = nil
+  end
+end
+
+function love.update(dt)
+  if DraggedDisc then
+    local mouseX = love.mouse.getX()
+    local mouseY = love.mouse.getY()
+    DraggedDisc.y = mouseY + DragOffsetY
   end
 end
 
