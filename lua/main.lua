@@ -37,6 +37,7 @@ function love.load()
   }
 
   DraggedDisc = nil
+  DragOffsetX = 0
   DragOffsetY = 0
 end
 
@@ -59,6 +60,7 @@ function love.mousepressed(x, y, button)
     if isWithinDisc(x, y, disc) then
       DraggedDisc = disc
       DragOffsetY = disc.y - y -- Captured only ONCE, when a click is detected
+      DragOffsetX = disc.x - x
       Message = "Clicked on Disc" .. i .. "!"
       return
     end
@@ -78,6 +80,7 @@ function love.update(dt)
     local mouseX = love.mouse.getX()
     local mouseY = love.mouse.getY()
     DraggedDisc.y = mouseY + DragOffsetY
+    DraggedDisc.x = mouseX + DragOffsetX
   end
 end
 
