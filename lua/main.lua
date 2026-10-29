@@ -1,5 +1,7 @@
 function love.load()
-  Message = "Hola!"
+  Message = ""
+  IsWon = false
+  Turns = 0
   WindowWidth = 900
   WindowHeight = 700
   WindowXMidpoint = WindowWidth / 2
@@ -74,12 +76,12 @@ function love.mousepressed(x, y, button)
       DraggedDisc = topDisc
       DragOffsetY = topDisc.y - y -- Captured only ONCE, when a click is detected
       DragOffsetX = topDisc.x - x
-      Message = "Clicked on Disc" .. i .. "!"
+      -- Message = "Clicked on Disc" .. i .. "!"
       return
     end
   end
 
-  Message = "x: " .. x .. "y: " .. y
+  -- Message = "x: " .. x .. "y: " .. y
 end
 
 local function pegCanAcceptDisc(peg, disc)
@@ -110,6 +112,8 @@ function love.mousereleased(x, y, button)
   removeTopDisc(SourcePeg)
   if not pegCanAcceptDisc(targetPeg, DraggedDisc) then
     targetPeg = SourcePeg  -- If the disc cannot be placed, let the disc snap back to the source peg
+  else
+    Turns = Turns + 1
   end
   placeDiscOnPeg(targetPeg, DraggedDisc)
 
@@ -128,6 +132,9 @@ function love.update(dt)
     DraggedDisc.y = mouseY + DragOffsetY
     DraggedDisc.x = mouseX + DragOffsetX
   end
+  if didWinGame() then
+    IsWon = true
+  end
 end
 
 local function drawPegs()
@@ -138,26 +145,37 @@ local function drawPegs()
   love.graphics.rectangle("line", Peg3X, WindowHeight - PegHeight, PegWidth, PegHeight)
 
   -- Draw Discs on the Pegs
+  for i, peg in ipairs({ Peg1, Peg2, Peg3 }) do
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle("line", peg.x, WindowHeight - PegHeight, PegWidth, PegHeight)
+
+    if peg.discs then
+      for j, disc in ipairs(peg.discs) do
+        if disc.order == 1 then
+          love.graphics.setColor(0, 0, 1)
+        elseif disc.order == 2 then
+          love.graphics.setColor(0, 1, 0)
+        else
+          love.graphics.setColor(1, 0, 0)
+        end
+        love.graphics.rectangle("fill", disc.x, disc.y, disc.width, DiscHeight)
+      end
+    end
+  end
 end
 
 function love.draw()
   love.graphics.setFont(Font)
   love.graphics.setColor(1, 1, 1)
-  love.graphics.print(Message)
+
+  love.graphics.print("Tower of Hanoi", (WindowWidth / 2) - 100, 0)
+  love.graphics.print("Quit: q", WindowWidth - 100, 0)
+
+  if IsWon then
+    love.graphics.print("You Won!!  The monks are happy.", (WindowWidth / 2) - 250, WindowHeight / 2)
+  elseif Turns > 0 then
+    love.graphics.print("Turns: " .. Turns)
+  end
 
   drawPegs()
-
-  -- Draw Discs
-  love.graphics.setColor(0, 0, 1)
-  love.graphics.rectangle("fill", Disc1.x, Disc1.y, Disc1.width, DiscHeight)
-  -- love.graphics.setColor(1, 1, 1)
-  -- love.graphics.print("A", 243, 196)
-  love.graphics.setColor(0, 1, 0)
-  love.graphics.rectangle("fill", Disc2.x, Disc2.y, Disc2.width, DiscHeight)
-  -- love.graphics.setColor(1, 1, 1)
-  -- love.graphics.print("B", 243, 221)
-  love.graphics.setColor(1, 0, 0)
-  love.graphics.rectangle("fill", Disc3.x, Disc3.y, Disc3.width, DiscHeight)
-  -- love.graphics.setColor(1, 1, 1)
-  -- love.graphics.print("C", 243, 246)
 end
